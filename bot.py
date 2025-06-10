@@ -112,28 +112,34 @@ async def call(ctx: discord.ApplicationContext):
     # We make this response ephemeral so that only the user who typed /call sees the dropdown.
     await ctx.respond("Select a game to send a Call to Arms!", view=view, ephemeral=True)
 
-# --- Replit hosting ---
+# --- Hosting Block for Render Web Service ---
 from flask import Flask
 from threading import Thread
 
+# Create a Flask app instance
 app = Flask('')
 
+# Define a simple route for the root URL
 @app.route('/')
 def home():
+    # This text will be displayed on the service's URL, confirming it's alive
     return "Call to Arms Bot is alive!"
 
+# Function to run the Flask app
 def run():
-  app.run(host='0.0.0.0', port=8080)
+  # Run on 0.0.0.0 to be accessible externally, port is handled by Render
+  app.run(host='0.0.0.0', port=10000) 
 
+# Function to keep the bot alive by running the web server in a separate thread
 def keep_alive():
     t = Thread(target=run)
     t.start()
-# --- End of hosting block ---
+# --- End of Hosting Block ---
+
 
 # --- Run the Bot ---
-# Add the keep_alive() call before bot.run()
+# Call the keep_alive function to start the web server
 keep_alive() 
 
-# --- Run the Bot ---
-# This line starts the bot using the token from your .env file.
+# Now run the bot itself
 bot.run(TOKEN)
